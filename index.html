@@ -4,34 +4,95 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>ChatOps Dashboard</title>
-    <!-- Script v6.9+ essencial para compatibilidade desktop -->
-    <script src="https://telegram.org/js/telegram-web-app.js?56"></script>
+    <script src="https://telegram.org/js/telegram-web-app.js"></script>
     <style>
-        body { font-family: -apple-system, sans-serif; background: #f4f4f4; padding: 20px; text-align: center; }
-        .btn { background: #0088cc; color: white; border: none; padding: 15px; width: 100%; border-radius: 8px; margin-bottom: 12px; font-weight: bold; cursor: pointer; }
+        :root {
+            --bg-color: var(--tg-theme-bg-color, #ffffff);
+            --text-color: var(--tg-theme-text-color, #000000);
+            --hint-color: var(--tg-theme-hint-color, #999999);
+            --button-color: var(--tg-theme-button-color, #2481cc);
+            --button-text: var(--tg-theme-button-text-color, #ffffff);
+            --sec-bg: var(--tg-theme-secondary-bg-color, #f0f0f0);
+        }
+
+        body {
+            font-family: -apple-system, sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            margin: 0;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            text-align: center;
+        }
+
+        .status-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+            margin-top: 20px;
+        }
+
+        .card {
+            background-color: var(--sec-bg);
+            padding: 15px;
+            border-radius: 12px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+        }
+
+        .btn-action {
+            display: block;
+            background-color: var(--button-color);
+            color: var(--button-text);
+            border: none;
+            padding: 12px;
+            border-radius: 8px;
+            text-decoration: none;
+            font-weight: bold;
+            font-size: 0.8rem;
+            margin-top: 10px;
+            cursor: pointer;
+        }
     </style>
 </head>
 <body>
-    <h3>Painel de Controle 🌐</h3>
-    <button class="btn" onclick="send('ping_dc_controlador')">📡 Testar Servidor</button>
-    <button class="btn" onclick="send('ping_fortigate')">🛡️ Testar Gateway</button>
-    <button class="btn" style="background: #e67e22;" onclick="send('ansible_menu')">🛠️ Menu Ansible</button>
+    <h2>Painel de Controle 🌐</h2>
+    <p>Infraestrutura e Automação</p>
+
+    <div class="status-grid">
+        <div class="card">
+            <strong>SERVIDOR DC</strong>
+            <a href="#" class="btn-action" onclick="exec('ping_dc_controlador')">📡 Testar</a>
+        </div>
+
+        <div class="card">
+            <strong>GATEWAY</strong>
+            <a href="#" class="btn-action" onclick="exec('ping_fortigate')">🛡️ Testar</a>
+        </div>
+
+        <div class="card" style="grid-column: span 2;">
+            <strong>AUTOMAÇÃO</strong>
+            <a href="#" class="btn-action" style="background-color: #e67e22;" onclick="exec('ansible_menu')">🛠️ Menu Ansible</a>
+        </div>
+    </div>
 
     <script>
         const tg = window.Telegram.WebApp;
-        
-        // Garante a inicialização em todas as plataformas
         tg.ready();
         tg.expand();
 
-        function send(cmd) {
+        function exec(cmd) {
+            // Tenta o método invisível (celular)
             try {
-                // Tenta enviar o dado. No Desktop, o sendData é restrito.
                 tg.sendData(cmd);
-            } catch (e) {
-                // Fallback para quando o sendData falha
-                tg.showAlert("Erro de envio. Tente abrir pelo botão de menu.");
-            }
+            } catch (e) {}
+
+            // Força a abertura via Deep Link (universal)
+            // Isso fecha o app e leva ao bot com o comando pronto
+            tg.openTelegramLink("https://t.me/HelperCanDevBot?start=" + cmd);
+            
+            // Fecha o Mini App
+            setTimeout(() => { tg.close(); }, 300);
         }
     </script>
 </body>

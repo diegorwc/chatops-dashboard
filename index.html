@@ -81,7 +81,7 @@
 </head>
 <body>
     <h2>Painel de Controle 🌐</h2>
-    <p>Infraestrutura e Automação</p>
+    <p>Gerenciamento de Infraestrutura</p>
 
     <div class="status-grid">
         <div class="card">
@@ -105,13 +105,27 @@
     </div>
 
     <script>
+        // Inicializa o Telegram WebApp com garantia de carregamento
         const tg = window.Telegram.WebApp;
-        tg.expand();
-        tg.ready();
+        
+        function initApp() {
+            tg.ready();
+            tg.expand();
+        }
 
         function send(cmd) {
-            tg.sendData(cmd);
+            try {
+                // O método sendData fecha o app automaticamente se bem sucedido
+                tg.sendData(cmd);
+            } catch (e) {
+                console.error("Erro ao enviar comando:", e);
+                // Fallback caso não esteja em modo seguro
+                tg.showAlert("Erro: Abra o painel pelo Botão de Menu para enviar comandos.");
+            }
         }
+
+        // Aguarda o DOM estar pronto
+        document.addEventListener('DOMContentLoaded', initApp);
     </script>
 </body>
 </html>

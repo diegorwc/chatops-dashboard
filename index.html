@@ -26,54 +26,86 @@
             text-align: center;
         }
 
+        h3 { margin-bottom: 5px; }
+        p { color: var(--hint-color); font-size: 0.8rem; margin-top: 0; margin-bottom: 20px; }
+
         .status-grid {
             display: grid;
             grid-template-columns: 1fr 1fr;
-            gap: 15px;
-            margin-top: 20px;
+            gap: 12px;
         }
 
         .card {
             background-color: var(--sec-bg);
-            padding: 15px;
+            padding: 12px;
             border-radius: 12px;
             box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
         }
+
+        .card strong { display: block; margin-bottom: 8px; font-size: 0.75rem; color: var(--hint-color); }
 
         .btn-action {
             display: block;
             background-color: var(--button-color);
             color: var(--button-text);
             border: none;
-            padding: 12px;
+            padding: 10px;
             border-radius: 8px;
             text-decoration: none;
             font-weight: bold;
-            font-size: 0.8rem;
-            margin-top: 10px;
+            font-size: 0.75rem;
             cursor: pointer;
         }
+
+        .btn-ansible { background-color: #e67e22; }
+        .btn-down { background-color: #e74c3c; }
+
+        .footer { margin-top: 30px; }
+        .btn-close { background: none; border: 1px solid var(--hint-color); color: var(--hint-color); padding: 8px 20px; border-radius: 20px; font-size: 0.8rem; }
     </style>
 </head>
 <body>
-    <h2>Painel de Controle 🌐</h2>
-    <p>Infraestrutura e Automação</p>
+    <h3>Painel de Controle 🌐</h3>
+    <p>Monitoramento e Automação</p>
 
     <div class="status-grid">
+        <!-- Linha 1: Status Geral (DOWN) -->
         <div class="card">
-            <strong>SERVIDOR DC</strong>
-            <a href="#" class="btn-action" onclick="exec('ping_dc_controlador')">📡 Testar</a>
+            <strong>CÂMERAS</strong>
+            <button class="btn-action btn-down" onclick="exec('cameras')">🚨 Offline</button>
         </div>
-
         <div class="card">
-            <strong>GATEWAY</strong>
-            <a href="#" class="btn-action" onclick="exec('ping_fortigate')">🛡️ Testar</a>
+            <strong>SWITCHES</strong>
+            <button class="btn-action btn-down" onclick="exec('switches')">🚨 Offline</button>
         </div>
 
         <div class="card" style="grid-column: span 2;">
-            <strong>AUTOMAÇÃO</strong>
-            <a href="#" class="btn-action" style="background-color: #e67e22;" onclick="exec('ansible_menu')">🛠️ Menu Ansible</a>
+            <strong>ACCESS POINTS</strong>
+            <button class="btn-action btn-down" onclick="exec('aps')">🚨 Verificar APs Offline</button>
         </div>
+
+        <!-- Linha 2: Pings Específicos -->
+        <div class="card">
+            <strong>SERVIDOR DC</strong>
+            <button class="btn-action" onclick="exec('ping_dc_controlador')">📡 Ping</button>
+        </div>
+        <div class="card">
+            <strong>GATEWAY</strong>
+            <button class="btn-action" onclick="exec('ping_fortigate')">🛡️ Ping</button>
+        </div>
+
+        <!-- Linha 3: Automação -->
+        <div class="card" style="grid-column: span 2;">
+            <strong>ANSIBLE</strong>
+            <button class="btn-action btn-ansible" onclick="exec('ansible_menu')">🛠️ Abrir Menu de Playbooks</button>
+        </div>
+    </div>
+
+    <div class="footer">
+        <button class="btn-close" onclick="tg.close()">Fechar Painel</button>
     </div>
 
     <script>
@@ -82,16 +114,8 @@
         tg.expand();
 
         function exec(cmd) {
-            // Tenta o método invisível (celular)
-            try {
-                tg.sendData(cmd);
-            } catch (e) {}
-
-            // Força a abertura via Deep Link (universal)
-            // Isso fecha o app e leva ao bot com o comando pronto
+            try { tg.sendData(cmd); } catch (e) {}
             tg.openTelegramLink("https://t.me/HelperCanDevBot?start=" + cmd);
-            
-            // Fecha o Mini App
             setTimeout(() => { tg.close(); }, 300);
         }
     </script>

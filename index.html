@@ -80,20 +80,20 @@
     </style>
 </head>
 <body>
-    <h2>Infraestrutura 🌐</h2>
+    <h2>Infraestrutura IFSC 🌐</h2>
     <p>Painel de Controle Rápido</p>
 
     <div class="status-grid">
-        <!-- Card Router -->
+        <!-- Card DC -->
         <div class="card">
-            <strong>Fortigate</strong>
-            <button class="btn-action" onclick="sendCommand('ping_router_core')">📡 Testar Ping</button>
+            <strong>CONTROLADOR DC</strong>
+            <button class="btn-action" onclick="sendCommand('ping_dc_controlador')">📡 Testar Ping</button>
         </div>
 
-        <!-- Card Switch -->
+        <!-- Card Fortigate -->
         <div class="card">
-            <strong>Samba DC</strong>
-            <button class="btn-action" onclick="sendCommand('ping_switch_mgmt')">📶 Testar Ping</button>
+            <strong>FORTIGATE</strong>
+            <button class="btn-action" onclick="sendCommand('ping_fortigate')">🛡️ Testar Ping</button>
         </div>
 
         <!-- Card Ansible -->
@@ -108,18 +108,11 @@
     </div>
 
     <script>
-        // Inicializa o Telegram WebApp
         const tg = window.Telegram.WebApp;
-        
-        // Expande o WebApp para ocupar a tela inteira
         tg.expand();
-        
-        // Define a cor do cabeçalho de acordo com o tema
         tg.setHeaderColor('secondary_bg_color');
 
         function sendCommand(cmd) {
-            // Envia o comando de volta para o bot
-            // Nota: tg.sendData() só funciona se o Mini App for aberto via KeyboardButton ou MenuButton
             tg.sendData(cmd);
         }
 
@@ -127,7 +120,6 @@
             tg.close();
         }
 
-        // Informa ao Telegram que o app está pronto para ser exibido
         tg.ready();
     </script>
 </body>
